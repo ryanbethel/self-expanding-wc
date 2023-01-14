@@ -41,12 +41,13 @@ ${sharedRender(state)}
       if (selfExpand!==null) {
         this.removeAttribute('self-expand')
         ${sharedRender.toString()}
-        // Todo: Map attributes into object
+        // Todo: Map attribute values into object to match 
+        // same with store if used
         const attrs = {priority:this?.attributes?.priority?.value}
         const slotContent = this.innerHTML
         const fragment = document.createElement('template')
         fragment.innerHTML = sharedRender({attrs})
-        // Todo: More complete slot replacement
+        // Todo: More robust slot algorithm needed
         const slot = fragment.content.querySelector('slot')
         slot.replaceWith(slotContent)
         this.replaceChildren(fragment.content)
