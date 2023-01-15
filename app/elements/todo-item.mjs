@@ -3,7 +3,6 @@
  * @type {import('@enhance/types').EnhanceElemFn}
  */
 export default function Element ({ html, state }) {
-  const {attrs} = state
   function sharedRender (state) { return `
     <p>${state?.attrs?.priority || 'Normal'} Priority Todo: 
       <slot></slot>
@@ -42,8 +41,8 @@ ${sharedRender(state)}
         this.removeAttribute('self-expand')
         ${sharedRender.toString()}
         // Todo: Map attribute values into object to match 
-        // same with store if used
-        const attrs = {priority:this?.attributes?.priority?.value}
+        // the server. Same with store if used
+        const attrs = {priority:this.attributes?.priority?.value}
         const slotContent = this.innerHTML
         const fragment = document.createElement('template')
         fragment.innerHTML = sharedRender({attrs})
