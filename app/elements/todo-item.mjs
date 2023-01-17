@@ -34,9 +34,9 @@ ${sharedRender(state)}
       }
     }
 
-    expand(force){
+    expand({force}){
       const selfExpand = this.getAttribute('self-expand')
-      if (force==='force' || selfExpand!==null) {
+      if (force || selfExpand!==null) {
         this.removeAttribute('self-expand')
         let attrs = {}
         if (this.hasAttributes()) {
@@ -44,7 +44,6 @@ ${sharedRender(state)}
             attrs[attr.name] = attr.value
           }
         } 
-        console.log({attrs})
         const store = {} // Todo: Connect client-side store
         const state = {attrs,store}
         const slotContent = this.innerHTML
