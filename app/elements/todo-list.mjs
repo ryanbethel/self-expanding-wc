@@ -20,11 +20,14 @@ export default function Element ({ html, state }) {
 
 
     addTodo (){
-      const item = document.createElement('todo-item')
-      item.innerText = this.input.value
-      item.setAttribute('priority','High')
-      item.setAttribute('self-expand','')
-      this.list.appendChild(item)
+      const text = this.input.value
+      // Mark with attribute 'self-expand' to trigger self expansion
+      this.list.insertAdjacentHTML('beforeend','<todo-item priority="High" self-expand>'+text+'</todo-item>')
+      // OR call expansion directly from parent
+      // const item = document.createElement('todo-item')
+      // item.innerText = this.input.value
+      // this.list.appendChild(item)
+      // item.expand('force')
     }
   }
   customElements.define('todo-list', TodoList) 

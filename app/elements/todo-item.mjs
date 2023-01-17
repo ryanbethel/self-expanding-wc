@@ -4,7 +4,7 @@
  */
 export default function Element ({ html, state }) {
   function sharedRender (state) { return `
-    <p>${state?.attrs?.priority || 'Normal'} Priority Todo: 
+    <p>${state.attrs?.priority || 'Normal'} Priority Todo: 
       <slot></slot>
     </p>
 `}
@@ -34,18 +34,23 @@ ${sharedRender(state)}
       }
     }
 
-
-    expand(){
+    expand(force){
       const selfExpand = this.getAttribute('self-expand')
-      if (selfExpand!==null) {
+      if (force==='force' || selfExpand!==null) {
         this.removeAttribute('self-expand')
-        ${sharedRender.toString()}
-        // Todo: Map attribute values into object to match 
-        // the server. Same with store if used
-        const attrs = {priority:this.attributes?.priority?.value}
+        let attrs = {}
+        if (this.hasAttributes()) {
+          for (const attr of this.attributes) {
+            attrs[attr.name] = attr.value
+          }
+        } 
+        console.log({attrs})
+        const store = {} // Todo: Connect client-side store
+        const state = {attrs,store}
         const slotContent = this.innerHTML
         const fragment = document.createElement('template')
-        fragment.innerHTML = sharedRender({attrs})
+        ${sharedRender.toString()} 
+        fragment.innerHTML = sharedRender(state)
         // Todo: More robust slot algorithm needed
         const slot = fragment.content.querySelector('slot')
         slot.replaceWith(slotContent)
