@@ -57,9 +57,9 @@ ${sharedRender(state)}
         const children = Array.from(fragment.childNodes)
         children.forEach(child => {
           const slot = child.assignedSlot
-          slot.parentNode.replaceChild(child,slot)
+          if (slot) slot.parentNode.replaceChild(child,slot)
         })
-        this.innerHTML = tmp.shadowRoot.innerHTML
+        this.innerHTML = fragment.shadowRoot.innerHTML
       }
     }
   }
