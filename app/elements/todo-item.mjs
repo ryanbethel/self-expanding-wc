@@ -2,8 +2,9 @@
 /**
  * @type {import('@enhance/types').EnhanceElemFn}
  */
-export default function Element ({ html, state }) {
-  function sharedRender (state) { return `
+export default function Element({ html, state }) {
+  function sharedRender(state) {
+    return `
     <p>${state.attrs?.priority || 'Normal'} Priority Todo: 
       <slot></slot>
     </p>
@@ -34,7 +35,8 @@ ${sharedRender(state)}
       }
     }
 
-    expand({force}){
+    expand({ force = false }={}){
+      console.log('called expand force:', force)
       const selfExpand = this.getAttribute('self-expand')
       if (force || selfExpand!==null) {
         this.removeAttribute('self-expand')
@@ -47,13 +49,17 @@ ${sharedRender(state)}
         const store = {} // Todo: Connect client-side store
         const state = {attrs,store}
         const slotContent = this.innerHTML
-        const fragment = document.createElement('template')
         ${sharedRender.toString()} 
-        fragment.innerHTML = sharedRender(state)
-        // Todo: More robust slot algorithm needed
-        const slot = fragment.content.querySelector('slot')
-        slot.replaceWith(slotContent)
-        this.replaceChildren(fragment.content)
+        const fragment = document.createElement('div')
+        fragment.replaceChildren(slotContent)
+        fragment.attachShadow({mode: 'open'});
+        fragment.shadowRoot.innerHTML = sharedRender(state) 
+        const children = Array.from(fragment.childNodes)
+        children.forEach(child => {
+          const slot = child.assignedSlot
+          slot.parentNode.replaceChild(child,slot)
+        })
+        this.innerHTML = tmp.shadowRoot.innerHTML
       }
     }
   }
