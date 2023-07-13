@@ -36,7 +36,6 @@ ${sharedRender(state)}
     }
 
     expand({ force = false }={}){
-      console.log('called expand force:', force)
       const selfExpand = this.getAttribute('self-expand')
       if (force || selfExpand!==null) {
         this.removeAttribute('self-expand')

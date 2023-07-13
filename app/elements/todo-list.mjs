@@ -1,4 +1,4 @@
-export default function Element ({ html }) {
+export default function Element({ html }) {
 
   return html`
   <ul class=todo_list>
