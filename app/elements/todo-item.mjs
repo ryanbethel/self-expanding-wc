@@ -49,9 +49,8 @@ ${sharedRender(state)}
         } 
         const store = {} // Todo: Connect client-side store
         const state = {attrs,store}
-        const slotContent = this.innerHTML
         const fragment = document.createElement('div')
-        fragment.replaceChildren(slotContent)
+        fragment.innerHTML = this.innerHTML
         fragment.attachShadow({mode: 'open'});
         fragment.shadowRoot.innerHTML = this.render(state) 
         const children = Array.from(fragment.childNodes)
@@ -71,6 +70,7 @@ ${sharedRender(state)}
     return \`
     <p>\${state.attrs?.priority || 'Normal'} Priority Todo: 
       <slot></slot>
+      <slot name=test></slot>
     </p>
     \`
     }
