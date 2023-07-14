@@ -70,7 +70,6 @@ ${sharedRender(state)}
     return \`
     <p>\${state.attrs?.priority || 'Normal'} Priority Todo: 
       <slot></slot>
-      <slot name=test></slot>
     </p>
     \`
     }

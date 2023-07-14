@@ -23,14 +23,14 @@ export default function Element({ html }) {
       const text = this.input.value
       // Option 1: Mark with attribute 'self-expand' to trigger self expansion  
       // vvvvvvvv
-      // this.list.insertAdjacentHTML('beforeend','<todo-item priority="High" self-expand>'+text+'</todo-item>')
+      this.list.insertAdjacentHTML('beforeend','<todo-item priority="High" self-expand>'+text+'</todo-item>')
       //
       // OR Option 2: Call expand method from parent
       // vvvvvvvv
-      const item = document.createElement('todo-item')
-      item.innerText = text
-      this.list.appendChild(item)
-      item.expand({force:true})
+      // const item = document.createElement('todo-item')
+      // item.innerText = text
+      // this.list.appendChild(item)
+      // item.expand({force:true})
     }
   }
   customElements.define('todo-list', TodoList) 
