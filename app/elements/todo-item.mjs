@@ -63,7 +63,7 @@ ${sharedRender(state)}
     }
 
     render(state) {
-      // return \${sharedRender(state)}()
+      // return \${sharedRender.tostring()}(state)
 
       // OR
 
