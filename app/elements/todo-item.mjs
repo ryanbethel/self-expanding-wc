@@ -9,26 +9,33 @@ export default function Element({ html, state }) {
       <slot></slot>
     </p>
 `}
+
   return html`
 ${sharedRender(state)}
 
 <script type="module">
-  class TodoItem extends HTMLElement {
+  const ShadySlotMixin = (superclass) => class extends superclass {
     constructor() {
       super()
       this.expand = this.expand.bind(this)
-      this.render = this.render.bind(this)
     }
 
     connectedCallback(){
+      if (super.connectedCallback) super.connectedCallback();
       this.expand() 
     }
 
     static get observedAttributes() {
+      if (super.observedAttributes) {
+        return super.observedAttributes.concat([ 'self-expand' ])
+      } 
       return [ 'self-expand' ]
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+      if (super.attributeChangedCallback) {
+        super.attributeChangedCallback(name, oldValue, newValue)
+      }
       if (oldValue !== newValue) {
         if (name === 'self-expand') {
           this.expand()
@@ -38,6 +45,7 @@ ${sharedRender(state)}
 
 
     expand({ force = false }={}){
+      if (this.alreadyExpanded) return
       const selfExpand = this.getAttribute('self-expand')
       if (force || selfExpand!==null) {
         this.removeAttribute('self-expand')
@@ -50,7 +58,7 @@ ${sharedRender(state)}
         const store = {} // Todo: Connect client-side store
         const state = {attrs,store}
         const fragment = document.createElement('div')
-        fragment.innerHTML = this.innerHTML
+        fragment.replaceChildren(this.cloneNode(true))
         fragment.attachShadow({mode: 'open'});
         fragment.shadowRoot.innerHTML = this.render(state) 
         const children = Array.from(fragment.childNodes)
@@ -61,6 +69,13 @@ ${sharedRender(state)}
         this.innerHTML = fragment.shadowRoot.innerHTML
       }
     }
+  }
+
+  class TodoItem extends ShadySlotMixin(HTMLElement) {
+    constructor() {
+      super()
+      this.render = this.render.bind(this)
+    }
 
     render(state) {
       // return \${sharedRender.tostring()}(state)
@@ -68,7 +83,7 @@ ${sharedRender(state)}
       // OR
 
     return \`
-    <p>\${state.attrs?.priority || 'Normal'} Priority Todo: 
+    <p>\${state?.attrs?.priority || 'Normal'} Priority Todo: 
       <slot></slot>
     </p>
     \`
