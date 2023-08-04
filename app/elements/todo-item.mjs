@@ -43,7 +43,6 @@ ${sharedRender(state)}
       }
     }
 
-
     expand({ force = false }={}){
       const selfExpand = this.getAttribute('self-expand')
       if (force || selfExpand!==null) {
@@ -57,14 +56,42 @@ ${sharedRender(state)}
         const store = {} // Todo: Connect client-side store
         const state = {attrs,store}
         const fragment = document.createElement('div')
-        fragment.replaceChildren(this.cloneNode(true))
-        fragment.attachShadow({mode: 'open'});
-        fragment.shadowRoot.innerHTML = this.render(state) 
+        fragment.innerHTML = this.innerHTML
         const children = Array.from(fragment.childNodes)
+        fragment.attachShadow({ mode: 'open' })
+        fragment.shadowRoot.innerHTML = this.render(state)
+        let unnamedSlot = {}
+        let namedSlots = {}
+
         children.forEach(child => {
           const slot = child.assignedSlot
-          if (slot) slot.parentNode.replaceChild(child,slot)
+          if (slot) {
+            if (slot.name) {
+              if (!namedSlots[slot.name]) namedSlots[slot.name] = {slotNode:slot,contentToSlot:[]}
+              namedSlots[slot.name].contentToSlot.push(child)
+            } else {
+              if (!unnamedSlot["slotNode"]) unnamedSlot = {slotNode:slot,contentToSlot:[]}
+              unnamedSlot.contentToSlot.push(child.innerHTML || child.textContent || '')
+            }
+          }
         })
+
+        // Named Slots
+        Object.entries(namedSlots).forEach(([name, slot])=>{
+          slot.slotNode.after(...namedSlots[name].contentToSlot)
+          slot.slotNode.remove()
+        })
+
+        // Unnamed Slot
+        unnamedSlot.slotNode.replaceWith(unnamedSlot.contentToSlot.join(''))
+
+        // Unused slots and default content 
+        const unfilledSlots = Array.from(fragment.shadowRoot.querySelectorAll('slot'))
+        unfilledSlots.forEach(slot => {
+          slot.after(...slot.childNodes)
+          slot.remove()
+        })
+
         this.innerHTML = fragment.shadowRoot.innerHTML
       }
     }

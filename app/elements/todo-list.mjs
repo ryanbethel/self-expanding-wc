@@ -23,7 +23,7 @@ export default function Element({ html }) {
       const text = this.input.value
       // Option 1: Mark with attribute 'self-expand' to trigger self expansion  
       // vvvvvvvv
-      this.list.insertAdjacentHTML('beforeend','<todo-item priority="High" self-expand>'+text+'<p>unnamed</p><p slot="test">named</p></todo-item>')
+      this.list.insertAdjacentHTML('beforeend','<todo-item priority="High" self-expand>'+text+'<p slot="test">named</p><p>unnamed</p></todo-item>')
       //
       // OR Option 2: Call expand method from parent
       // vvvvvvvv
