@@ -45,7 +45,6 @@ ${sharedRender(state)}
 
 
     expand({ force = false }={}){
-      if (this.alreadyExpanded) return
       const selfExpand = this.getAttribute('self-expand')
       if (force || selfExpand!==null) {
         this.removeAttribute('self-expand')
@@ -84,7 +83,9 @@ ${sharedRender(state)}
 
     return \`
     <p>\${state?.attrs?.priority || 'Normal'} Priority Todo: 
-      <slot></slot>
+      <span><slot></slot></span>
+      <span><slot name=test></slot></span>
+
     </p>
     \`
     }
